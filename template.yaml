@@ -1,4 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
 Resources:
   PPandLPricesTable:
     Type: 'AWS::DynamoDB::Table'
@@ -15,3 +16,18 @@ Resources:
         WriteCapacityUnits: 5
       SSESpecification:
         SSEEnabled: true
+
+  MyLambdaFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: index.lambda_handler
+      Runtime: python3.11
+      CodeUri: ./lambda_function/
+      Description: A simple AWS Lambda function.
+      Timeout: 10
+      Events:
+        ScheduledEvent:
+          Type: Schedule
+          Properties:
+            # Every day at 0:00
+            Schedule: "cron(0 12 1 6,12 ? *)"
